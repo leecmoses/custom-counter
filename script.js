@@ -10,6 +10,10 @@ const countdownElTitle = document.getElementById('countdown-title');
 const countdownBtn = document.getElementById('countdown-button');
 const timeElementEl = document.querySelectorAll('span');
 
+const completeEl = document.getElementById('complete');
+const completeInfoEl = document.getElementById('complete-info');
+const completeBtn = document.getElementById('complete-button');
+
 let countdownTitle = '';
 let countdownDate = '';
 // countdownValue can be set to an empty string but an empty Date object is more descriptive
@@ -38,19 +42,27 @@ const updateDOM = () => {
         const seconds = Math.floor((distance % minute) / second);
         console.log(days, hours, minutes, seconds);
 
-        // Populate Countdown
-        countdownElTitle.textContent = `${countdownTitle}`;
-
-        // textContent returns every element in the node and is faster than innerHTML because it does not parse HTML
-        timeElementEl[0].textContent = days;
-        timeElementEl[1].textContent = hours;
-        timeElementEl[2].textContent = minutes;
-        timeElementEl[3].textContent = seconds;
-
         // Hide Input
         inputContainer.hidden = true;
-        // Show Countdown
-        countdownEl.hidden = false;
+
+        // If the countdown has ended, show complete
+        if (distance < 0) {
+            countdownEl.hidden = true;
+            clearInterval(countdownActive);
+            completeInfoEl.textContent = `${countdownTitle} finished on ${countdownDate}`;
+            completeEl.hidden = false;
+        } else {
+            // Else, show the countdown in progress by populating countdown
+            countdownElTitle.textContent = `${countdownTitle}`;
+
+            // textContent returns every element in the node and is faster than innerHTML because it does not parse HTML
+            timeElementEl[0].textContent = days;
+            timeElementEl[1].textContent = hours;
+            timeElementEl[2].textContent = minutes;
+            timeElementEl[3].textContent = seconds;
+            completeEl.hidden = true;
+            countdownEl.hidden = false;
+        }
     }, second);
 };
 
@@ -76,6 +88,7 @@ const updateCountdown = e => {
 const reset = () => {
     // Hide Countdowns, show input
     countdownEl.hidden = true;
+    completeEl.hidden = true;
     inputContainer.hidden = false;
 
     // Stop the countdown
@@ -85,10 +98,11 @@ const reset = () => {
     countdownTitle = '';
     countdownDate = '';
 
-    // titleEl.textContent = `${countdownTitle}`;
-    // dateEl.value = `${countdownDate}`;
+    titleEl.value = countdownTitle;
+    dateEl.value = countdownDate;
 }
 
 // Event Listeners
 countdownForm.addEventListener('submit', updateCountdown);
 countdownBtn.addEventListener('click', reset);
+completeBtn.addEventListener('click', reset);

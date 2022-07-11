@@ -16,8 +16,8 @@ const completeBtn = document.getElementById('complete-button');
 
 let countdownTitle = '';
 let countdownDate = '';
-// countdownValue can be set to an empty string but an empty Date object is more descriptive
-let countdownValue = Date;
+// countdownValue can be set to an empty string but a new Date is more descriptive, maintain a variables type throughout the code
+let countdownValue = new Date();
 let countdownActive;
 let savedCountdown;
 
